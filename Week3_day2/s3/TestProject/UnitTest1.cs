@@ -252,7 +252,7 @@ namespace dotnetapp.Tests
             var employee2Data = new Dictionary<string, object>
             {
                 { "Name", "James Brown" },
-                { "Email", "jane@example.com" }, // Same email as employee1
+                { "Email", "janee@example.com" }, // Same email as employee1
                 { "Salary", 1800 },
                 { "Dob", DateTime.Parse("1985-03-10") },
                 { "Dept", "Finance" }
