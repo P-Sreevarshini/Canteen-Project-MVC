@@ -239,7 +239,7 @@ namespace dotnetapp.Tests
         [Test]
         public void Employee_Property_UniqueEmail_Validation()
         {
-            // Mock employee data with the same email for two employees
+            // Mock employee data with the same email address for two employees
             var employee1Data = new Dictionary<string, object>
             {
                 { "Name", "Jane Smith" },
@@ -256,7 +256,6 @@ namespace dotnetapp.Tests
                 { "Salary", 1800 },
                 { "Dob", DateTime.Parse("1985-03-10") },
                 { "Dept", "Finance" }
-                
             };
 
             // Create employee objects from the mock data
@@ -267,13 +266,13 @@ namespace dotnetapp.Tests
             string expectedErrorMessage = "Email must be unique";
 
             // Validate the employee objects
-var context1 = new ValidationContext(employee1, null, null);
-var context2 = new ValidationContext(employee2, null, null);
-var results1 = new List<ValidationResult>();
-var results2 = new List<ValidationResult>();
+            var context1 = new ValidationContext(employee1, null, null);
+            var context2 = new ValidationContext(employee2, null, null);
+            var results1 = new List<ValidationResult>();
+            var results2 = new List<ValidationResult>();
 
-bool isValid1 = Validator.TryValidateObject(employee1, context1, results1);
-bool isValid2 = Validator.TryValidateObject(employee2, context2, results2);
+            bool isValid1 = Validator.TryValidateObject(employee1, context1, results1);
+            bool isValid2 = Validator.TryValidateObject(employee2, context2, results2);
 
             // Assert that the first employee is valid
             Assert.IsTrue(isValid1);
@@ -282,6 +281,28 @@ bool isValid2 = Validator.TryValidateObject(employee2, context2, results2);
             Assert.IsFalse(isValid2);
             var errorMessages = results2.Select(result => result.ErrorMessage).ToList();
             Assert.Contains(expectedErrorMessage, errorMessages);
+        }
+
+
+        private Employee CreateEmployeeFromDictionary(Dictionary<string, object> data)
+        {
+            var employee = new Employee();
+            foreach (var kvp in data)
+            {
+                var propertyInfo = typeof(Employee).GetProperty(kvp.Key);
+                if (propertyInfo != null)
+                {
+                    if (propertyInfo.PropertyType == typeof(decimal) && kvp.Value is int intValue)
+                    {
+                        propertyInfo.SetValue(employee, (decimal)intValue);
+                    }
+                    else
+                    {
+                        propertyInfo.SetValue(employee, kvp.Value);
+                    }
+                }
+            }
+            return employee;
         }
     }
 }
