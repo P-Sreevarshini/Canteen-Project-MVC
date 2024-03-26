@@ -11,7 +11,7 @@
 
             [Required(ErrorMessage = "Email is required")]
             [EmailAddress(ErrorMessage = "Invalid email format")]
-            // [UniqueEmail(ErrorMessage = "Email must be unique")]
+            [UniqueEmail(ErrorMessage = "Email must be unique")]
             public string Email { get; set; }
 
             [Range(1, int.MaxValue, ErrorMessage = "Salary should be greater than 0")]
@@ -20,7 +20,7 @@
 
             [DataType(DataType.Date)]
             [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-            // [MinAge(25, ErrorMessage = "Employee must be 25 years or older")]
+            [MinAge(25, ErrorMessage = "Employee must be 25 years or older")]
             public DateTime Dob { get; set; }
             [Required(ErrorMessage = "Department is required")]
 
