@@ -11,7 +11,7 @@
 
             [Required(ErrorMessage = "Email is required")]
             [EmailAddress(ErrorMessage = "Invalid email format")]
-            [UniqueEmail(ErrorMessage = "Email must be unique")]
+            // [UniqueEmail(ErrorMessage = "Email must be unique")]
             public string Email { get; set; }
 
             [Range(1, int.MaxValue, ErrorMessage = "Salary should be greater than 0")]
