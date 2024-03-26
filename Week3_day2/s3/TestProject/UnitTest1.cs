@@ -252,7 +252,7 @@ public void Employee_UniqueEmail_ShouldPassValidation()
     var employee2Data = new Dictionary<string, object>
     {
         { "Name", "James Brown" },
-        { "Email", "james@example.com" }, // Different email from employee1
+        { "Email", "jane@example.com" }, // Different email from employee1
         { "Salary", 1800 },
         { "Dob", DateTime.Parse("1985-03-10") },
         { "Dept", "Finance" }
@@ -276,10 +276,6 @@ public void Employee_UniqueEmail_ShouldPassValidation()
     Assert.IsTrue(isValid2);
 }
 
-
-
-
-
         private Employee CreateEmployeeFromDictionary(Dictionary<string, object> data)
         {
             var employee = new Employee();
@@ -300,5 +296,46 @@ public void Employee_UniqueEmail_ShouldPassValidation()
             }
             return employee;
         }
+        [Test]
+public void Employee_DuplicateEmail_ShouldFailValidation()
+{
+    var employee1Data = new Dictionary<string, object>
+    {
+        { "Name", "John Doe" },
+        { "Email", "john@example.com" },
+        { "Salary", 1500 },
+        { "Dob", DateTime.Now.AddYears(-24).AddDays(1) }, // Adjusted to ensure above minimum age
+        { "Dept", "HR" }
+    };
+
+    var employee2Data = new Dictionary<string, object>
+    {
+        { "Name", "Jane Smith" },
+        { "Email", "john@example.com" }, // Same email as employee1
+        { "Salary", 2000 },
+        { "Dob", DateTime.Now.AddYears(-26).AddDays(1) }, // Adjusted to ensure above minimum age
+        { "Dept", "IT" }
+    };
+
+    var employee1 = CreatePlayerFromDictionary(employee1Data);
+    var employee2 = CreatePlayerFromDictionary(employee2Data);
+
+    string expectedErrorMessage = "Email must be unique"; // Expected error message for duplicate email
+    var context2 = new ValidationContext(employee2, null, null);
+    var results2 = new List<ValidationResult>();
+
+    bool isValid2 = Validator.TryValidateObject(employee2, context2, results2);
+
+    Assert.IsFalse(isValid2);
+    var errorMessages = results2.Select(result => result.ErrorMessage).ToList();
+    Assert.Contains(expectedErrorMessage, errorMessages);
+
+    // Assert that employee1 passes validation since the UniqueEmail attribute is commented out
+    var context1 = new ValidationContext(employee1, null, null);
+    var results1 = new List<ValidationResult>();
+    bool isValid1 = Validator.TryValidateObject(employee1, context1, results1);
+    Assert.IsTrue(isValid1);
+}
+
     }
 }
