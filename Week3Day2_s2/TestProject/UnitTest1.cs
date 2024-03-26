@@ -93,7 +93,7 @@ namespace dotnetapp.Tests
         [Test]
         public void Test_HomeViewFile_Exists()
         {
-            string indexPath = Path.Combine(@"/home/coder/project/workspace/dotnetapp/Views/Employee/", "Home.cshtml");
+            string indexPath = Path.Combine(@"/home/coder/project/workspace/Week3Day2_s2/dotnetapp/Views/Employee/", "Home.cshtml");
             bool indexViewExists = File.Exists(indexPath);
 
             Assert.IsTrue(indexViewExists, "Home.cshtml view file does not exist.");
@@ -101,7 +101,7 @@ namespace dotnetapp.Tests
         [Test]
         public void Test_DetailsViewFile_Exists()
         {
-            string indexPath = Path.Combine(@"/home/coder/project/workspace/dotnetapp/Views/Employee/", "Details.cshtml");
+            string indexPath = Path.Combine(@"/home/coder/project/workspace/Week3Day2_s2/dotnetapp/Views/Employee/", "Details.cshtml");
             bool indexViewExists = File.Exists(indexPath);
 
             Assert.IsTrue(indexViewExists, "Details.cshtml view file does not exist.");
@@ -109,7 +109,7 @@ namespace dotnetapp.Tests
         [Test]
         public void Test_DepartmentsViewFile_Exists()
         {
-            string indexPath = Path.Combine(@"/home/coder/project/workspace/dotnetapp/Views/Employee/", "Departments.cshtml");
+            string indexPath = Path.Combine(@"/home/coder/project/workspace/Week3Day2_s2/dotnetapp/Views/Employee/", "Departments.cshtml");
             bool indexViewExists = File.Exists(indexPath);
 
             Assert.IsTrue(indexViewExists, "Departments.cshtml view file does not exist.");
@@ -117,7 +117,7 @@ namespace dotnetapp.Tests
         [Test]
         public void Test_AttendanceViewFile_Exists()
         {
-            string indexPath = Path.Combine(@"/home/coder/project/workspace/dotnetapp/Views/Employee/", "Attendance.cshtml");
+            string indexPath = Path.Combine(@"/home/coder/project/workspace/Week3Day2_s2/dotnetapp/Views/Employee/", "Attendance.cshtml");
             bool indexViewExists = File.Exists(indexPath);
 
             Assert.IsTrue(indexViewExists, "Attendance.cshtml view file does not exist.");
