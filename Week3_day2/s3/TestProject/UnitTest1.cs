@@ -211,8 +211,77 @@ namespace dotnetapp.Tests
                 Assert.Contains(expectedErrorMessage, errorMessages);
             }
         }
+[Test]
+public void Employee_Property_MinAge_Validation()
+{
+    var employeeData = new Dictionary<string, object>
+    {
+        { "Name", "John Doe" },
+        { "Email", "john@example.com" },
+        { "Salary", 1500 },
+        { "Dob", DateTime.Now.AddYears(-24).AddDays(1) }, // Adjusted to ensure below minimum age
+        { "Dept", "HR" }
+    };
+    var employee = CreatePlayerFromDictionary(employeeData);
+    string expectedErrorMessage = "Employee must be 25 years or older";
+    var context = new ValidationContext(employee, null, null);
+    var results = new List<ValidationResult>();
 
-        
+    bool isValid = Validator.TryValidateObject(employee, context, results);
+
+    if (expectedErrorMessage == null)
+    {
+        Assert.IsTrue(isValid);
+    }
+    else
+    {
+        Assert.IsFalse(isValid); // Expecting this test to fail
+        var errorMessages = results.Select(result => result.ErrorMessage).ToList();
+        Assert.Contains(expectedErrorMessage, errorMessages);
+    }
+}
+
+
+        [Test]
+        public void Employee_Property_UniqueEmail_Validation()
+        {
+            var employee1Data = new Dictionary<string, object>
+            {
+                { "Name", "Jane Smith" },
+                { "Email", "jane@example.com" },
+                { "Salary", 2000 },
+                { "Dob", DateTime.Parse("1990-05-15") },
+                { "Dept", "IT" }
+            };
+
+            var employee2Data = new Dictionary<string, object>
+            {
+                { "Name", "James Brown" },
+                { "Email", "jane@example.com" }, // Same email as employee1
+                { "Salary", 1800 },
+                { "Dob", DateTime.Parse("1985-03-10") },
+                { "Dept", "Finance" }
+            };
+
+            var employee1 = CreatePlayerFromDictionary(employee1Data);
+            var employee2 = CreatePlayerFromDictionary(employee2Data);
+
+            string expectedErrorMessage = "Email must be unique";
+
+            var context1 = new ValidationContext(employee1, null, null);
+            var context2 = new ValidationContext(employee2, null, null);
+            var results1 = new List<ValidationResult>();
+            var results2 = new List<ValidationResult>();
+
+            bool isValid1 = Validator.TryValidateObject(employee1, context1, results1);
+            bool isValid2 = Validator.TryValidateObject(employee2, context2, results2);
+
+            Assert.IsTrue(isValid1); // First employee should be valid
+
+            Assert.IsFalse(isValid2); // Second employee should not be valid
+            var errorMessages = results2.Select(result => result.ErrorMessage).ToList();
+            Assert.Contains(expectedErrorMessage, errorMessages);
+        }
 
     }
 }
