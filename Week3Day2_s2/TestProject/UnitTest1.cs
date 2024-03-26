@@ -165,19 +165,19 @@ namespace dotnetapp.Tests
             Assert.IsTrue(htmlContent.Contains(htmlLine), "HTML line not found in HTML content.");
         }
         [Test]
-        public void TestHomeLinkPresence()
+        public void Test_HomeLink_present_in_DepartmentsView()
         {
             string htmlLine = "<a asp-controller=\"Employee\" asp-action=\"Home\">Home</a>";
             Assert.IsTrue(htmlContent.Contains(htmlLine), "Home link not found in HTML content.");
         }
         [Test]
-        public void TestAttendanceLinkPresence()
+        public void Test_AttendanceLink_present_in_Detailsview()
         {
             string htmlLine = "<a asp-controller=\"Employee\" asp-action=\"Attendance\">Attendance</a>";
             Assert.IsTrue(htmlContent.Contains(htmlLine), "Attendance link not found in HTML content.");
         }
         [Test]
-        public void TestEmployeeDetailsLinkPresence()
+        public void Test_EmployeeDetailsLink_present_in_HomeView()
         {
             string htmlLine = "<a asp-controller=\"Employee\" asp-action=\"Details\">Employee Details</a>";
             Assert.IsTrue(htmlContent.Contains(htmlLine), "Employee Details link not found in HTML content.");
