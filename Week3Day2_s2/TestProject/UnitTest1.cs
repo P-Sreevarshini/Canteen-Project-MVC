@@ -156,5 +156,39 @@ namespace dotnetapp.Tests
             // Create an instance of the controller using reflection
             return (EmployeeController)Activator.CreateInstance(controllerType);
         }
+        [Test]
+        public void AttendancePage_ContainsHyperlinkToDepartments()
+        {
+            // Arrange
+            var view = new AttendanceView();
+
+            // Act
+            var result = view.Render();
+
+            // Assert
+            Assert.Contains("<a asp-controller=\"Employee\" asp-action=\"Departments\">Department</a>", result);
+        }
+    }
+
+    // Mock Razor view for Attendance.cshtml
+    public class AttendanceView
+    {
+        public string Render()
+        {
+            var view = new RazorViewEngine().FindView(null, "Attendance", false).View;
+
+            using (var writer = new StringWriter())
+            {
+                var viewContext = new ViewContext
+                {
+                    Writer = writer
+                };
+
+                var viewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary());
+                view.RenderAsync(viewContext).GetAwaiter().GetResult();
+
+                return writer.ToString();
+            }
+        }
     }
 }
