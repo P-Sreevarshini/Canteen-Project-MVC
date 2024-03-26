@@ -166,29 +166,9 @@ namespace dotnetapp.Tests
             var result = view.Render();
 
             // Assert
-            Assert.Contains("<a asp-controller=\"Employee\" asp-action=\"Departments\">Department</a>", result);
+            Assert.IsTrue(result.Contains("<a asp-controller=\"Employee\" asp-action=\"Departments\">Department</a>"), "Hyperlink to Departments not found in Attendance page.");
         }
-    }
+        
 
-    // Mock Razor view for Attendance.cshtml
-    public class AttendanceView
-    {
-        public string Render()
-        {
-            var view = new RazorViewEngine().FindView(null, "Attendance", false).View;
-
-            using (var writer = new StringWriter())
-            {
-                var viewContext = new ViewContext
-                {
-                    Writer = writer
-                };
-
-                var viewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary());
-                view.RenderAsync(viewContext).GetAwaiter().GetResult();
-
-                return writer.ToString();
-            }
-        }
     }
 }
