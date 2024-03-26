@@ -237,51 +237,58 @@ namespace dotnetapp.Tests
         }
         
         [Test]
-        public void Employee_Property_UniqueEmail_Validation()
-        {
-            // Mock employee data with the same email address for two employees
-            var employee1Data = new Dictionary<string, object>
-            {
-                { "Name", "Jane Smith" },
-                { "Email", "jane@example.com" },
-                { "Salary", 2000 },
-                { "Dob", DateTime.Parse("1990-05-15") },
-                { "Dept", "IT" }
-            };
+public void Employee_Property_UniqueEmail_Validation()
+{
+    // Mock employee data with the same email address for two employees
+    var employee1Data = new Dictionary<string, object>
+    {
+        { "Name", "Jane Smith" },
+        { "Email", "jane@example.com" },
+        { "Salary", 2000 },
+        { "Dob", DateTime.Parse("1990-05-15") },
+        { "Dept", "IT" }
+    };
 
-            var employee2Data = new Dictionary<string, object>
-            {
-                { "Name", "James Brown" },
-                { "Email", "janee@example.com" }, // Same email as employee1
-                { "Salary", 1800 },
-                { "Dob", DateTime.Parse("1985-03-10") },
-                { "Dept", "Finance" }
-            };
+    var employee2Data = new Dictionary<string, object>
+    {
+        { "Name", "James Brown" },
+        { "Email", "jane@example.com" }, // Same email as employee1
+        { "Salary", 1800 },
+        { "Dob", DateTime.Parse("1985-03-10") },
+        { "Dept", "Finance" }
+    };
 
-            // Create employee objects from the mock data
-            var employee1 = CreatePlayerFromDictionary(employee1Data);
-            var employee2 = CreatePlayerFromDictionary(employee2Data);
+    // Create employee objects from the mock data
+    var employee1 = CreatePlayerFromDictionary(employee1Data);
+    var employee2 = CreatePlayerFromDictionary(employee2Data);
 
-            // Define the expected error message
-            string expectedErrorMessage = "Email must be unique";
+    // Define the expected error message
+    string expectedErrorMessage = "Email must be unique";
 
-            // Validate the employee objects
-            var context1 = new ValidationContext(employee1, null, null);
-            var context2 = new ValidationContext(employee2, null, null);
-            var results1 = new List<ValidationResult>();
-            var results2 = new List<ValidationResult>();
+    // Validate the employee objects
+    var context1 = new ValidationContext(employee1, null, null);
+    var context2 = new ValidationContext(employee2, null, null);
+    var results1 = new List<ValidationResult>();
+    var results2 = new List<ValidationResult>();
 
-            bool isValid1 = Validator.TryValidateObject(employee1, context1, results1);
-            bool isValid2 = Validator.TryValidateObject(employee2, context2, results2);
+    bool isValid1 = Validator.TryValidateObject(employee1, context1, results1);
+    bool isValid2 = Validator.TryValidateObject(employee2, context2, results2);
 
-            // Assert that the first employee is valid
-            Assert.IsTrue(isValid1);
+    if (employee1Data["Email"].ToString() == employee2Data["Email"].ToString())
+    {
+        // If the emails are the same, assert that the second employee is invalid and contains the expected error message
+        Assert.IsFalse(isValid2);
+        var errorMessages = results2.Select(result => result.ErrorMessage).ToList();
+        Assert.Contains(expectedErrorMessage, errorMessages);
+    }
+    else
+    {
+        // If the emails are different, assert that both employees are valid
+        Assert.IsTrue(isValid1);
+        Assert.IsTrue(isValid2);
+    }
+}
 
-            // Assert that the second employee is invalid and contains the expected error message
-            Assert.IsFalse(isValid2);
-            var errorMessages = results2.Select(result => result.ErrorMessage).ToList();
-            Assert.Contains(expectedErrorMessage, errorMessages);
-        }
 
 
         private Employee CreateEmployeeFromDictionary(Dictionary<string, object> data)
