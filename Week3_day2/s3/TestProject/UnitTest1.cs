@@ -107,27 +107,28 @@ namespace dotnetapp.Tests
             }
         }
 
-        // [Test]
-        // public void Employee_Properties_Have_MinAgeAttribute()
-        // {
-        //     var count = 0;
-        //     Type employeeType = typeof(Employee);
-        //     PropertyInfo[] properties = employeeType.GetProperties();
+        [Test]
+        public void Employee_Properties_Have_MinAgeAttribute()
+        {
+            var count = 0;
+            Type employeeType = typeof(Employee);
+            PropertyInfo[] properties = employeeType.GetProperties();
 
-        //     foreach (var property in properties)
-        //     {
-        //         if (property.Name == "Dob")
-        //         {
-        //             var minAgeAttribute = property.GetCustomAttribute<MinAgeAttribute>();
-        //             Assert.NotNull(minAgeAttribute, $"{property.Name} should have a MinAgeAttribute.");
-        //             count++;
-        //             break;
-        //         }
-        //     }
-        //     if( count == 0)
-        //     { Assert.Fail(); }
-        // }
+            foreach (var property in properties)
+            {
+                if (property.Name == "Dob")
+                {
+                    var minAgeAttribute = property.GetCustomAttribute<MinAgeAttribute>();
+                    Assert.NotNull(minAgeAttribute, $"{property.Name} should have a MinAgeAttribute.");
+                    count++;
+                    break;
+                }
+            }
+            if( count == 0)
+            { Assert.Fail(); }
+        }
 
+        //[TestCase("Alice Brown", "alice@example.com", 1500, "1990-01-01", "HR", null)] // Valid case, no error expected
         [Test]
         public void Employee_Property_Name_Validation()
         {
@@ -235,6 +236,7 @@ namespace dotnetapp.Tests
             
         }
         
+       
         private Employee CreateEmployeeFromDictionary(Dictionary<string, object> data)
         {
             var employee = new Employee();
