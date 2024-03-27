@@ -130,6 +130,34 @@ namespace dotnetapp.Tests
         {
             _httpClient.Dispose();
         }
+        [TearDown]
+        public async Task Cleanup()
+        {
+            // Delete all test products
+            await DeleteAllTestProducts();
+
+            _httpClient.Dispose();
+        }
+
+    private async Task DeleteAllTestProducts()
+    {
+        var response = await _httpClient.GetAsync("api/product");
+        response.EnsureSuccessStatusCode();
+
+        var content = await response.Content.ReadAsStringAsync();
+        var products = JsonConvert.DeserializeObject<Product[]>(content);
+
+        foreach (var product in products)
+        {
+            await DeleteTestProduct(product.Id);
+        }
+    }
+    private async Task DeleteTestProduct(int productId)
+        {
+            var response = await _httpClient.DeleteAsync($"api/product/{productId}");
+            response.EnsureSuccessStatusCode();
+        }
+
 
     }
 }
