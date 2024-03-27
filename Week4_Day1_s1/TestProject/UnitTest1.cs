@@ -134,8 +134,6 @@ namespace dotnetapp.Tests
 
         private async Task DeleteTestProductFromList(int productId)
         {
-            // Assuming you have a static list to store your products
-            // You can remove the test product from the list based on its ID
             var productToRemove = _products.FirstOrDefault(p => p.Id == productId);
             if (productToRemove != null)
             {
@@ -143,7 +141,7 @@ namespace dotnetapp.Tests
             }
         }
 
-        [TearDown]
+       [TearDown]
         public async Task Cleanup()
         {
             // Delete the test product if it was created
@@ -152,7 +150,11 @@ namespace dotnetapp.Tests
                 await DeleteTestProductFromList(_testProduct.Id);
             }
 
+            // Clear the list of test products
+            _products.Clear();
+
             _httpClient.Dispose();
         }
+
     }
 }
