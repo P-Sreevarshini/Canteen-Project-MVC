@@ -1,5 +1,7 @@
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -13,12 +15,13 @@ namespace dotnetapp.Tests
     [TestFixture]
     public class ProductControllerTests
     {
-         private const string ProductServiceName = "ProductService";
-         private const string ProductControllerName = "ProductController";
+        private const string ProductServiceName = "ProductService";
+        private const string ProductControllerName = "ProductController";
 
         private HttpClient _httpClient;
         private Assembly _assembly;
         private Product _testProduct;
+        private static List<Product> _products = new List<Product>();
 
         [SetUp]
         public async Task Setup()
@@ -29,6 +32,9 @@ namespace dotnetapp.Tests
             
             // Create a new test product before each test case
             _testProduct = await CreateTestProduct();
+            
+            // Add the test product to the list
+            _products.Add(_testProduct);
         }
 
         private async Task<Product> CreateTestProduct()
@@ -82,6 +88,7 @@ namespace dotnetapp.Tests
             Assert.IsNotNull(product);
             Assert.AreEqual(_testProduct.Id, product.Id);
         }
+
         [Test]
         public async Task Test_GetProductById_InvalidId_ReturnsNotFound()
         {
@@ -108,6 +115,7 @@ namespace dotnetapp.Tests
             object serviceInstance = Activator.CreateInstance(serviceType);
             Assert.IsNotNull(serviceInstance);
         }
+
         [Test]
         public void Test_ProductController_Exist()
         {
@@ -124,40 +132,27 @@ namespace dotnetapp.Tests
             }
         }
 
+        private async Task DeleteTestProductFromList(int productId)
+        {
+            // Assuming you have a static list to store your products
+            // You can remove the test product from the list based on its ID
+            var productToRemove = _products.FirstOrDefault(p => p.Id == productId);
+            if (productToRemove != null)
+            {
+                _products.Remove(productToRemove);
+            }
+        }
 
         [TearDown]
         public async Task Cleanup()
         {
-            _httpClient.Dispose();
-        }
-        [TearDown]
-        public async Task Cleanup()
-        {
-            // Delete all test products
-            await DeleteAllTestProducts();
+            // Delete the test product if it was created
+            if (_testProduct != null)
+            {
+                await DeleteTestProductFromList(_testProduct.Id);
+            }
 
             _httpClient.Dispose();
         }
-
-    private async Task DeleteAllTestProducts()
-    {
-        var response = await _httpClient.GetAsync("api/product");
-        response.EnsureSuccessStatusCode();
-
-        var content = await response.Content.ReadAsStringAsync();
-        var products = JsonConvert.DeserializeObject<Product[]>(content);
-
-        foreach (var product in products)
-        {
-            await DeleteTestProduct(product.Id);
-        }
-    }
-    private async Task DeleteTestProduct(int productId)
-        {
-            var response = await _httpClient.DeleteAsync($"api/product/{productId}");
-            response.EnsureSuccessStatusCode();
-        }
-
-
     }
 }
