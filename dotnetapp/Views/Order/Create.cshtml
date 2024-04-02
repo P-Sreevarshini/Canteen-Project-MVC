@@ -6,19 +6,12 @@
         <input asp-for="CustomerName" class="form-control" />
         <span asp-validation-for="CustomerName" class="text-danger"></span>
     </div>
-    <div class="form-group">
-        <label asp-for="FoodItem"></label>
-        <select asp-for="FoodItem" class="form-control">
-            <option value="Sandwich">Sandwich</option>
-            <option value="Pizza">Pizza</option>
-            <option value="Salad">Salad</option>
-            <option value="Fries">Fries</option>
-            <option value="Chicken Nuggets">Chicken Nuggets</option>
+   <div class="form-group">
+    <label asp-for="FoodItem">Food Item:</label>
+    <input asp-for="FoodItem" class="form-control" />
+    <span asp-validation-for="FoodItem" class="text-danger"></span>
+</div>
 
-
-        </select>
-        <span asp-validation-for="FoodItem" class="text-danger"></span>
-    </div>
     <div class="form-group">
         <label asp-for="Quantity"></label>
         <input asp-for="Quantity" type="number" class="form-control" />
