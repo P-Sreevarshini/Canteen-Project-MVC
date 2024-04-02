@@ -1,0 +1,27 @@
+@model List<dotnetapp.Models.CanteenOrder>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Order ID</th>
+            <th>Customer Name</th>
+            <th>Food Item</th>
+            <th>Quantity</th>
+            <th>Special Instructions</th>
+            <th>Order Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var order in Model)
+        {
+            <tr>
+                <td>@order.OrderId</td>
+                <td>@order.CustomerName</td>
+                <td>@order.FoodItem</td>
+                <td>@order.Quantity</td>
+                <td>@order.SpecialInstructions</td>
+                <td>@order.OrderDate.ToString("MM/dd/yyyy HH:mm")</td>
+            </tr>
+        }
+    </tbody>
+</table>
