@@ -1,167 +1,118 @@
-using NUnit.Framework;
-using System;
-using System.Linq;
-using dotnetapp.Controllers;
+using System.Numerics;
 using dotnetapp.Models;
+using System.Reflection;
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
+using NUnit.Framework;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
-
-namespace dotnetapp.Tests
+namespace TestProject
 {
-    [TestFixture]
-    public class OrderControllerTests
+    public class Tests
     {
+        private ApplicationDbContext _context;
+        [SetUp]
+        public void Setup()
+        {
+            var _dbContextOptions = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase(databaseName: "InMemoryDatabase")
+                .Options;
+            _context = new ApplicationDbContext(_dbContextOptions);
+        }
+        [TearDown]
+        public void TearDown()
+        {
+            _context.Database.EnsureDeleted();
+        }
+
+        // Test to check that ApplicationDbContext Contains DbSet for model ElectionCandidate
         [Test]
-        public void OrderController_Exists()
+        public void ApplicationDbContext_ContainsDbSet_ElectionCandidate()
         {
-            // Arrange
-            var controller = new OrderController(null);
-
-            // Act & Assert
-            Assert.NotNull(controller);
+            Assembly assembly = Assembly.GetAssembly(typeof(ApplicationDbContext));
+            Type contextType = assembly.GetTypes().FirstOrDefault(t => typeof(DbContext).IsAssignableFrom(t));
+            if (contextType == null)
+            {
+                Assert.Fail("No DbContext found in the assembly");
+                return;
+            }
+            Type ElectionCandidateType = assembly.GetTypes().FirstOrDefault(t => t.Name == "ElectionCandidate");
+            if (ElectionCandidateType == null)
+            {
+                Assert.Fail("No DbSet found in the DbContext");
+                return;
+            }
+            var propertyInfo = contextType.GetProperty("ElectionCandidates");
+            if (propertyInfo == null)
+            {
+                Assert.Fail("ElectionCandidates property not found in the DbContext");
+                return;
+            }
+            else
+            {
+                Assert.AreEqual(typeof(DbSet<>).MakeGenericType(ElectionCandidateType), propertyInfo.PropertyType);
+            }
         }
 
+        // Test to check whether CandidateController Controllers Class exists
         [Test]
-        public void OrderController_Constructor_Injects_ApplicationDbContext_Correctly()
+        public void CandidateController_Controllers_ClassExists()
         {
-            // Arrange
-            var dbContext = new ApplicationDbContext(null);
-            var controller = new OrderController(dbContext);
-
-            // Act & Assert
-            Assert.NotNull(controller);
-            Assert.NotNull(controller.GetType().GetProperty("_context"));
+            string assemblyName = "dotnetapp";
+            string typeName = "dotnetapp.Controllers.CandidateController";
+            Assembly assembly = Assembly.Load(assemblyName);
+            Type CandidateControllerType = assembly.GetType(typeName);
+            Assert.IsNotNull(CandidateControllerType);
         }
 
+        // Test to Check CandidateController Controllers Method Index Exists
         [Test]
-        public void Index_Returns_ViewResult()
+        public void CandidateController_Index_MethodExists()
         {
-            // Arrange
-            var dbContext = new ApplicationDbContext(null);
-            var controller = new OrderController(dbContext);
-
-            // Act
-            var result = controller.Index();
-
-            // Assert
-            Assert.IsInstanceOf<ViewResult>(result);
+            string assemblyName = "dotnetapp";
+            string typeName = "dotnetapp.Controllers.CandidateController";
+            Assembly assembly = Assembly.Load(assemblyName);
+            Type CandidateControllerType = assembly.GetType(typeName);
+            MethodInfo methodInfo = CandidateControllerType.GetMethod("Index");
+            Assert.IsNotNull(methodInfo, "Method Index does not exist in CandidateController class");
         }
 
+
+        // Test to Check CandidateController Controllers Method Index with no parameter Returns IActionResult
         [Test]
-        public void Index_Returns_ViewResult_With_OrderList()
+        public void CandidateController_Index_Method_with_NoParams_Returns_IActionResult()
         {
-            // Arrange
-            var dbContext = new ApplicationDbContext(null);
-            var controller = new OrderController(dbContext);
-
-            // Act
-            var result = controller.Index() as ViewResult;
-
-            // Assert
-            Assert.NotNull(result);
-            Assert.NotNull(result.Model);
-            Assert.IsAssignableFrom<IQueryable<CanteenOrder>>(result.Model);
+            string assemblyName = "dotnetapp";
+            string typeName = "dotnetapp.Controllers.CandidateController";
+            Assembly assembly = Assembly.Load(assemblyName);
+            Type CandidateControllerType = assembly.GetType(typeName);
+            MethodInfo methodInfo = CandidateControllerType.GetMethod("Index", Type.EmptyTypes);
+            Assert.AreEqual(typeof(IActionResult), methodInfo.ReturnType, "Method Index in CandidateController class is not of type IActionResult");
         }
 
+        // Test to Check CandidateController Controllers Method Create Exists
         [Test]
-        public void Create_Returns_ViewResult()
+        public void CandidateController_Create_MethodExists()
         {
-            // Arrange
-            var dbContext = new ApplicationDbContext(null);
-            var controller = new OrderController(dbContext);
-
-            // Act
-            var result = controller.Create();
-
-            // Assert
-            Assert.IsInstanceOf<ViewResult>(result);
+            string assemblyName = "dotnetapp";
+            string typeName = "dotnetapp.Controllers.CandidateController";
+            Assembly assembly = Assembly.Load(assemblyName);
+            Type CandidateControllerType = assembly.GetType(typeName);
+            MethodInfo methodInfo = CandidateControllerType.GetMethod("Create", Type.EmptyTypes);
+            Assert.IsNotNull(methodInfo, "Method Create does not exist in CandidateController class");
         }
 
+
+        // Test to Check CandidateController Controllers Method Create with no parameter Returns IActionResult
         [Test]
-        public void Create_Post_Redirects_To_Index()
+        public void CandidateController_Create_Method_with_NoParams_Returns_IActionResult()
         {
-            // Arrange
-            var dbContext = new ApplicationDbContext(null);
-            var controller = new OrderController(dbContext);
-            var order = new CanteenOrder { CustomerName = "John Doe", FoodItem = "Pizza", Quantity = 2 };
-
-            // Act
-            var result = controller.Create(order) as RedirectToActionResult;
-
-            // Assert
-            Assert.NotNull(result);
-            Assert.AreEqual("Index", result.ActionName);
+            string assemblyName = "dotnetapp";
+            string typeName = "dotnetapp.Controllers.CandidateController";
+            Assembly assembly = Assembly.Load(assemblyName);
+            Type CandidateControllerType = assembly.GetType(typeName);
+            MethodInfo methodInfo = CandidateControllerType.GetMethod("Create", Type.EmptyTypes);
+            Assert.AreEqual(typeof(IActionResult), methodInfo.ReturnType, "Method Create in CandidateController class is not of type IActionResult");
         }
-
-        [Test]
-        public void Create_Post_Returns_ViewResult_With_Invalid_Model_State()
-        {
-            // Arrange
-            var dbContext = new ApplicationDbContext(null);
-            var controller = new OrderController(dbContext);
-            controller.ModelState.AddModelError("CustomerName", "Customer Name is required");
-            var order = new CanteenOrder();
-
-            // Act
-            var result = controller.Create(order);
-
-            // Assert
-            Assert.IsInstanceOf<ViewResult>(result);
-        }
-
-        // Additional test cases can be added for other methods and scenarios
-    }
-
-    [TestFixture]
-    public class CanteenOrderTests
-    {
-        [Test]
-        public void CanteenOrder_Exists()
-        {
-            // Arrange & Act & Assert
-            Assert.NotNull(typeof(CanteenOrder));
-        }
-
-        [Test]
-        public void CanteenOrder_Has_OrderId_Property()
-        {
-            // Arrange & Act & Assert
-            Assert.NotNull(typeof(CanteenOrder).GetProperty("OrderId"));
-        }
-
-        [Test]
-        public void OrderId_Property_Has_Key_Attribute()
-        {
-            // Arrange
-            var property = typeof(CanteenOrder).GetProperty("OrderId");
-
-            // Act
-            var keyAttribute = Attribute.GetCustomAttribute(property, typeof(KeyAttribute));
-
-            // Assert
-            Assert.NotNull(keyAttribute);
-        }
-         [Test]
-        public void Create_View_Exists()
-        {
-            // Arrange
-            var viewPath = Path.Combine(Directory.GetCurrentDirectory(), "Views", "Order", "Create.cshtml");
-
-            // Act & Assert
-            Assert.True(File.Exists(viewPath));
-        }
-
-        [Test]
-        public void Index_View_Exists()
-        {
-            // Arrange
-            var viewPath = Path.Combine(Directory.GetCurrentDirectory(), "Views", "Order", "Index.cshtml");
-
-            // Act & Assert
-            Assert.True(File.Exists(viewPath));
-        }
-
-
     }
 }
