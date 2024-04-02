@@ -25,9 +25,9 @@ namespace TestProject
             _context.Database.EnsureDeleted();
         }
 
-        // Test to check that ApplicationDbContext Contains DbSet for model ElectionCandidate
+        // Test to check that ApplicationDbContext Contains DbSet for model CanteenOrder
         [Test]
-        public void ApplicationDbContext_ContainsDbSet_ElectionCandidate()
+        public void ApplicationDbContext_ContainsDbSet_CanteenOrder()
         {
             Assembly assembly = Assembly.GetAssembly(typeof(ApplicationDbContext));
             Type contextType = assembly.GetTypes().FirstOrDefault(t => typeof(DbContext).IsAssignableFrom(t));
@@ -36,70 +36,59 @@ namespace TestProject
                 Assert.Fail("No DbContext found in the assembly");
                 return;
             }
-            Type ElectionCandidateType = assembly.GetTypes().FirstOrDefault(t => t.Name == "ElectionCandidate");
-            if (ElectionCandidateType == null)
+            Type CanteenOrderType = assembly.GetTypes().FirstOrDefault(t => t.Name == "CanteenOrder");
+            if (CanteenOrderType == null)
             {
                 Assert.Fail("No DbSet found in the DbContext");
                 return;
             }
-            var propertyInfo = contextType.GetProperty("ElectionCandidates");
+            var propertyInfo = contextType.GetProperty("CanteenOrders");
             if (propertyInfo == null)
             {
-                Assert.Fail("ElectionCandidates property not found in the DbContext");
+                Assert.Fail("CanteenOrders property not found in the DbContext");
                 return;
             }
             else
             {
-                Assert.AreEqual(typeof(DbSet<>).MakeGenericType(ElectionCandidateType), propertyInfo.PropertyType);
+                Assert.AreEqual(typeof(DbSet<>).MakeGenericType(CanteenOrderType), propertyInfo.PropertyType);
             }
         }
 
-        // Test to check whether CandidateController Controllers Class exists
+        // Test to check whether OrderController Controllers Class exists
         [Test]
-        public void CandidateController_Controllers_ClassExists()
+        public void OrderController_Controllers_ClassExists()
         {
             string assemblyName = "dotnetapp";
-            string typeName = "dotnetapp.Controllers.CandidateController";
+            string typeName = "dotnetapp.Controllers.OrderController";
             Assembly assembly = Assembly.Load(assemblyName);
-            Type CandidateControllerType = assembly.GetType(typeName);
-            Assert.IsNotNull(CandidateControllerType);
+            Type OrderControllerType = assembly.GetType(typeName);
+            Assert.IsNotNull(OrderControllerType);
         }
 
-        // Test to Check CandidateController Controllers Method Index Exists
+        // Test to Check OrderController Controllers Method Index Exists
         [Test]
-        public void CandidateController_Index_MethodExists()
+        public void OrderController_Index_MethodExists()
         {
             string assemblyName = "dotnetapp";
-            string typeName = "dotnetapp.Controllers.CandidateController";
+            string typeName = "dotnetapp.Controllers.OrderController";
             Assembly assembly = Assembly.Load(assemblyName);
-            Type CandidateControllerType = assembly.GetType(typeName);
-            MethodInfo methodInfo = CandidateControllerType.GetMethod("Index");
-            Assert.IsNotNull(methodInfo, "Method Index does not exist in CandidateController class");
+            Type OrderControllerType = assembly.GetType(typeName);
+            MethodInfo methodInfo = OrderControllerType.GetMethod("Index");
+            Assert.IsNotNull(methodInfo, "Method Index does not exist in OrderController class");
         }
 
 
-        // Test to Check CandidateController Controllers Method Index with no parameter Returns IActionResult
+        
+        // Test to Check OrderController Controllers Method Create Exists
         [Test]
-        public void CandidateController_Index_Method_with_NoParams_Returns_IActionResult()
+        public void OrderController_Create_MethodExists()
         {
             string assemblyName = "dotnetapp";
-            string typeName = "dotnetapp.Controllers.CandidateController";
+            string typeName = "dotnetapp.Controllers.OrderController";
             Assembly assembly = Assembly.Load(assemblyName);
-            Type CandidateControllerType = assembly.GetType(typeName);
-            MethodInfo methodInfo = CandidateControllerType.GetMethod("Index", Type.EmptyTypes);
-            Assert.AreEqual(typeof(IActionResult), methodInfo.ReturnType, "Method Index in CandidateController class is not of type IActionResult");
-        }
-
-        // Test to Check CandidateController Controllers Method Create Exists
-        [Test]
-        public void CandidateController_Create_MethodExists()
-        {
-            string assemblyName = "dotnetapp";
-            string typeName = "dotnetapp.Controllers.CandidateController";
-            Assembly assembly = Assembly.Load(assemblyName);
-            Type CandidateControllerType = assembly.GetType(typeName);
-            MethodInfo methodInfo = CandidateControllerType.GetMethod("Create", Type.EmptyTypes);
-            Assert.IsNotNull(methodInfo, "Method Create does not exist in CandidateController class");
+            Type OrderControllerType = assembly.GetType(typeName);
+            MethodInfo methodInfo = OrderControllerType.GetMethod("Create", Type.EmptyTypes);
+            Assert.IsNotNull(methodInfo, "Method Create does not exist in OrderController class");
         }
 
 
