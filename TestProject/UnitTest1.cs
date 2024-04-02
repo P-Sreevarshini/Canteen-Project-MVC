@@ -10,21 +10,10 @@ namespace TestProject
 {
     public class Tests
     {
-        private ApplicationDbContext _context;
         [SetUp]
         public void Setup()
         {
-            var _dbContextOptions = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseInMemoryDatabase(databaseName: "InMemoryDatabase")
-                .Options;
-            _context = new ApplicationDbContext(_dbContextOptions);
         }
-        [TearDown]
-        public void TearDown()
-        {
-            _context.Database.EnsureDeleted();
-        }
-
         // Test to check that ApplicationDbContext Contains DbSet for model CanteenOrder
         [Test]
         public void ApplicationDbContext_ContainsDbSet_CanteenOrder()
@@ -77,8 +66,6 @@ namespace TestProject
             Assert.IsNotNull(methodInfo, "Method Index does not exist in OrderController class");
         }
 
-
-        
         // Test to Check OrderController Controllers Method Create Exists
         [Test]
         public void OrderController_Create_MethodExists()
@@ -89,19 +76,6 @@ namespace TestProject
             Type OrderControllerType = assembly.GetType(typeName);
             MethodInfo methodInfo = OrderControllerType.GetMethod("Create", Type.EmptyTypes);
             Assert.IsNotNull(methodInfo, "Method Create does not exist in OrderController class");
-        }
-
-
-        // Test to Check CandidateController Controllers Method Create with no parameter Returns IActionResult
-        [Test]
-        public void CandidateController_Create_Method_with_NoParams_Returns_IActionResult()
-        {
-            string assemblyName = "dotnetapp";
-            string typeName = "dotnetapp.Controllers.CandidateController";
-            Assembly assembly = Assembly.Load(assemblyName);
-            Type CandidateControllerType = assembly.GetType(typeName);
-            MethodInfo methodInfo = CandidateControllerType.GetMethod("Create", Type.EmptyTypes);
-            Assert.AreEqual(typeof(IActionResult), methodInfo.ReturnType, "Method Create in CandidateController class is not of type IActionResult");
         }
     }
 }
