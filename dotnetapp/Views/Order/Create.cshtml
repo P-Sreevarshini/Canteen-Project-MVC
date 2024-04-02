@@ -1,5 +1,5 @@
 @model dotnetapp.Models.CanteenOrder
-
+<h2> Place Your Order !!! </h2>
 <form asp-action="Create">
     <div class="form-group">
         <label asp-for="CustomerName"></label>
@@ -12,6 +12,10 @@
             <option value="Sandwich">Sandwich</option>
             <option value="Pizza">Pizza</option>
             <option value="Salad">Salad</option>
+            <option value="Fries">Fries</option>
+            <option value="Chicken Nuggets">Chicken Nuggets</option>
+
+
         </select>
         <span asp-validation-for="FoodItem" class="text-danger"></span>
     </div>
