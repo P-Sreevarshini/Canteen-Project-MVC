@@ -19,9 +19,7 @@ namespace TestProject
         public void Setup()
         {
             // Initialize an in-memory database context
-            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseInMemoryDatabase(databaseName: "TestDatabase")
-                .Options;
+            var options = new DbContextOptionsBuilder<ApplicationDbContext>().UseInMemoryDatabase(databaseName: "TestDatabase").Options;
             _context = new ApplicationDbContext(options);
         }
 
@@ -209,26 +207,20 @@ namespace TestProject
         [Test]
         public void Create_in_OrderController_Add_new_Order_to_DB()
         {
-            // Arrange
             string assemblyName = "dotnetapp";
             Assembly assembly = Assembly.Load(assemblyName);
 
-            // Create an instance of CanteenOrder
             string canteenOrderTypeName = "dotnetapp.Models.CanteenOrder";
             Type canteenOrderType = assembly.GetType(canteenOrderTypeName);
             object canteenOrderInstance = Activator.CreateInstance(canteenOrderType);
 
-            // Create an instance of OrderController
             string orderControllerTypeName = "dotnetapp.Controllers.OrderController";
             Type orderControllerType = assembly.GetType(orderControllerTypeName);
             object orderControllerInstance = Activator.CreateInstance(orderControllerType, _context);
 
-            // Act
-            // Call the Create method of OrderController
             var method = orderControllerType.GetMethod("Create");
             var result = method.Invoke(orderControllerInstance, new[] { canteenOrderInstance }) as IActionResult;
 
-            // Assert
             Assert.IsNotNull(result);
             Assert.IsInstanceOf<RedirectToActionResult>(result);
 
