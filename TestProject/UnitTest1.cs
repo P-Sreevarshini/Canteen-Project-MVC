@@ -203,30 +203,40 @@ namespace TestProject
             MethodInfo methodInfo = OrderControllerType.GetMethod("Create", new Type[] { canteenOrderType });
             Assert.IsNotNull(methodInfo, "Result should not be null");
         }
-       // Test to check that Create method in OrderController adds new order to db
+        
+       // Test to check that Create method in OrderController adds a new order to the database
         [Test]
         public void Create_in_OrderController_Add_new_Order_to_DB()
         {
             string assemblyName = "dotnetapp";
             Assembly assembly = Assembly.Load(assemblyName);
-
             string canteenOrderTypeName = "dotnetapp.Models.CanteenOrder";
             Type canteenOrderType = assembly.GetType(canteenOrderTypeName);
-            object canteenOrderInstance = Activator.CreateInstance(canteenOrderType);
 
+            // Create a new instance of CanteenOrder with required properties
+            var canteenOrderInstance = new CanteenOrder
+            {
+                CustomerName = "John Doe",
+                FoodItem = "Burger",
+                Quantity = 4,
+                SpecialInstructions = "No onions"
+            };
             string orderControllerTypeName = "dotnetapp.Controllers.OrderController";
             Type orderControllerType = assembly.GetType(orderControllerTypeName);
             object orderControllerInstance = Activator.CreateInstance(orderControllerType, _context);
 
-            var method = orderControllerType.GetMethod("Create");
+            // Get the Create method of OrderController
+            var method = orderControllerType.GetMethod("Create", new Type[] { canteenOrderType });
+
+            // Invoke the Create method with the created CanteenOrder instance
             var result = method.Invoke(orderControllerInstance, new[] { canteenOrderInstance }) as IActionResult;
-
             Assert.IsNotNull(result);
-            Assert.IsInstanceOf<RedirectToActionResult>(result);
 
+            Assert.IsInstanceOf<RedirectToActionResult>(result);
             var redirectResult = result as RedirectToActionResult;
             Assert.AreEqual("Index", redirectResult.ActionName);
 
+            // Retrieve all orders from the context and assert that there is one order present
             var orders = _context.CanteenOrders.ToList();
             Assert.AreEqual(1, orders.Count);
         }
