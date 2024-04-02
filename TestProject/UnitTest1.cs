@@ -192,27 +192,27 @@ namespace TestProject
         }
         // test to check that Create method in CandidateController adds new candidate to db
         [Test]
-        public void Create_in_CandidateController_Add_new_Candidate_to_DB()
+        public void Create_in_OrderController_Add_new_Order_to_DB()
         {
             string assemblyName = "dotnetapp";
             Assembly assembly = Assembly.Load(assemblyName);
-            string modelType = "dotnetapp.Models.ElectionCandidate";
-            string controllerTypeName = "dotnetapp.Controllers.CandidateController";
+            string modelType = "dotnetapp.Models.CanteenOrder";
+            string controllerTypeName = "dotnetapp.Controllers.OrderController";
             Type controllerType = assembly.GetType(controllerTypeName);
             Type controllerType2 = assembly.GetType(modelType);
             
                 var teamData = new Dictionary<string, object>
                     {
-                        { "StudentName", "Demo1" },
-                        { "Standard", "X" },
-                        { "PositionAppliedFor", "Vice-President" },
-                        { "ContactEmail", "Demo1@gmail.com" },
-                        { "CampaignPlatform", "Xyz ABC" }
+                        { "CustomerName", "Demo" },
+                        { "FoodItem", "DemoFood" },
+                        { "Quantity", 1 },
+                        { "SpecialInstructions", "DemoSpecialInstructions" },
+                        { "OrderDate", DateTime.Now }
                     };
-            var commuter = new ElectionCandidate();
+            var commuter = new CanteenOrder();
                 foreach (var kvp in teamData)
                 {
-                    var propertyInfo = typeof(ElectionCandidate).GetProperty(kvp.Key);
+                    var propertyInfo = typeof(CanteenOrder).GetProperty(kvp.Key);
                     if (propertyInfo != null)
                     {
                         propertyInfo.SetValue(commuter, kvp.Value);
@@ -225,9 +225,9 @@ namespace TestProject
 
                     var controller = Activator.CreateInstance(controllerType, _context);
                     var result = method.Invoke(controller, new object[] { commuter });
-                    var ride = _context.ElectionCandidates.ToList().FirstOrDefault(o => (int)o.GetType().GetProperty("StudentId").GetValue(o) == 1);
+                    var ride = _context.CanteenOrder.ToList().FirstOrDefault(o => (int)o.GetType().GetProperty("OrderId").GetValue(o) == 1);
                     Assert.IsNotNull(result);
-                    Assert.AreEqual("X", (string)ride.GetType().GetProperty("Standard").GetValue(ride));
+                    Assert.AreEqual("DemoFood", (string)ride.GetType().GetProperty("FoodItem").GetValue(ride));
                 }
                 else
                 {
