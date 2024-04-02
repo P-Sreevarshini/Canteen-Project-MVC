@@ -10,10 +10,25 @@ namespace TestProject
 {
     public class Tests
     {
-         private ApplicationDbContext _context;
+        private ApplicationDbContext _context; // Make sure _context is initialized or injected
+        // [SetUp]
+        // public void Setup()
+        // {
+        // }
         [SetUp]
         public void Setup()
         {
+            // Initialize an in-memory database context
+            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase(databaseName: "TestDatabase")
+                .Options;
+            _context = new ApplicationDbContext(options);
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            _context.Dispose();
         }
         
         // Test to check that ApplicationDbContext Contains DbSet for model CanteenOrder
@@ -190,49 +205,38 @@ namespace TestProject
             MethodInfo methodInfo = OrderControllerType.GetMethod("Create", new Type[] { canteenOrderType });
             Assert.IsNotNull(methodInfo, "Result should not be null");
         }
-        // test to check that Create method in CandidateController adds new candidate to db
+       // Test to check that Create method in OrderController adds new order to db
         [Test]
         public void Create_in_OrderController_Add_new_Order_to_DB()
         {
+            // Arrange
             string assemblyName = "dotnetapp";
             Assembly assembly = Assembly.Load(assemblyName);
-            string modelType = "dotnetapp.Models.CanteenOrder";
-            string controllerTypeName = "dotnetapp.Controllers.OrderController";
-            Type controllerType = assembly.GetType(controllerTypeName);
-            Type controllerType2 = assembly.GetType(modelType);
-            
-                var teamData = new Dictionary<string, object>
-                    {
-                        { "CustomerName", "Demo" },
-                        { "FoodItem", "DemoFood" },
-                        { "Quantity", 1 },
-                        { "SpecialInstructions", "DemoSpecialInstructions" },
-                        { "OrderDate", DateTime.Now }
-                    };
-            var commuter = new CanteenOrder();
-                foreach (var kvp in teamData)
-                {
-                    var propertyInfo = typeof(CanteenOrder).GetProperty(kvp.Key);
-                    if (propertyInfo != null)
-                    {
-                        propertyInfo.SetValue(commuter, kvp.Value);
-                    }
-                }
-                MethodInfo method = controllerType.GetMethod("Create", new[] { controllerType2 });
 
-                if (method != null)
-                {
+            // Create an instance of CanteenOrder
+            string canteenOrderTypeName = "dotnetapp.Models.CanteenOrder";
+            Type canteenOrderType = assembly.GetType(canteenOrderTypeName);
+            object canteenOrderInstance = Activator.CreateInstance(canteenOrderType);
 
-                    var controller = Activator.CreateInstance(controllerType, _context);
-                    var result = method.Invoke(controller, new object[] { commuter });
-                    var ride = _context.CanteenOrder.ToList().FirstOrDefault(o => (int)o.GetType().GetProperty("OrderId").GetValue(o) == 1);
-                    Assert.IsNotNull(result);
-                    Assert.AreEqual("DemoFood", (string)ride.GetType().GetProperty("FoodItem").GetValue(ride));
-                }
-                else
-                {
-                    Assert.Fail();
-                }
-            }
+            // Create an instance of OrderController
+            string orderControllerTypeName = "dotnetapp.Controllers.OrderController";
+            Type orderControllerType = assembly.GetType(orderControllerTypeName);
+            object orderControllerInstance = Activator.CreateInstance(orderControllerType, _context);
+
+            // Act
+            // Call the Create method of OrderController
+            var method = orderControllerType.GetMethod("Create");
+            var result = method.Invoke(orderControllerInstance, new[] { canteenOrderInstance }) as IActionResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOf<RedirectToActionResult>(result);
+
+            var redirectResult = result as RedirectToActionResult;
+            Assert.AreEqual("Index", redirectResult.ActionName);
+
+            var orders = _context.CanteenOrders.ToList();
+            Assert.AreEqual(1, orders.Count);
         }
+    }
 }
