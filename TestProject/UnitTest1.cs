@@ -43,6 +43,87 @@ namespace TestProject
             }
         }
 
+       // Test to check whether CanteenOrder Models Class exists
+        [Test]
+        public void CanteenOrder_Models_ClassExists()
+        {
+            string assemblyName = "dotnetapp";
+            string typeName = "dotnetapp.Models.CanteenOrder";
+            Assembly assembly = Assembly.Load(assemblyName);
+            Type CanteenOrderType = assembly.GetType(typeName);
+            Assert.IsNotNull(CanteenOrderType);
+        }
+
+        // Test to Check CanteenOrder Models Property OrderId Exists with correcct datatype int    
+        [Test]
+        public void CanteenOrder_OrderId_PropertyExists_ReturnExpectedDataTypes_int()
+        {
+            string assemblyName = "dotnetapp";
+            string typeName = "dotnetapp.Models.CanteenOrder";
+            Assembly assembly = Assembly.Load(assemblyName);
+            Type CanteenOrderType = assembly.GetType(typeName);
+            PropertyInfo propertyInfo = CanteenOrderType.GetProperty("OrderId");
+            Assert.IsNotNull(propertyInfo, "Property OrderId does not exist in CanteenOrder class");
+            Type expectedType = propertyInfo.PropertyType;
+            Assert.AreEqual(typeof(int), expectedType, "Property OrderId in CanteenOrder class is not of type int");
+        }
+
+        // Test to Check CanteenOrder Models Property CustomerName Exists with correcct datatype string    
+        [Test]
+        public void CanteenOrder_CustomerName_PropertyExists_ReturnExpectedDataTypes_string()
+        {
+            string assemblyName = "dotnetapp";
+            string typeName = "dotnetapp.Models.CanteenOrder";
+            Assembly assembly = Assembly.Load(assemblyName);
+            Type CanteenOrderType = assembly.GetType(typeName);
+            PropertyInfo propertyInfo = CanteenOrderType.GetProperty("CustomerName");
+            Assert.IsNotNull(propertyInfo, "Property CustomerName does not exist in CanteenOrder class");
+            Type expectedType = propertyInfo.PropertyType;
+            Assert.AreEqual(typeof(string), expectedType, "Property CustomerName in CanteenOrder class is not of type string");
+        }
+
+        // Test to Check CanteenOrder Models Property FoodItem Exists with correcct datatype string    
+        [Test]
+        public void CanteenOrder_FoodItem_PropertyExists_ReturnExpectedDataTypes_string()
+        {
+            string assemblyName = "dotnetapp";
+            string typeName = "dotnetapp.Models.CanteenOrder";
+            Assembly assembly = Assembly.Load(assemblyName);
+            Type CanteenOrderType = assembly.GetType(typeName);
+            PropertyInfo propertyInfo = CanteenOrderType.GetProperty("FoodItem");
+            Assert.IsNotNull(propertyInfo, "Property FoodItem does not exist in CanteenOrder class");
+            Type expectedType = propertyInfo.PropertyType;
+            Assert.AreEqual(typeof(string), expectedType, "Property FoodItem in CanteenOrder class is not of type string");
+        }
+
+        // Test to Check CanteenOrder Models Property SpecialInstructions Exists with correcct datatype string    
+        [Test]
+        public void CanteenOrder_SpecialInstructions_PropertyExists_ReturnExpectedDataTypes_string()
+        {
+            string assemblyName = "dotnetapp";
+            string typeName = "dotnetapp.Models.CanteenOrder";
+            Assembly assembly = Assembly.Load(assemblyName);
+            Type CanteenOrderType = assembly.GetType(typeName);
+            PropertyInfo propertyInfo = CanteenOrderType.GetProperty("SpecialInstructions");
+            Assert.IsNotNull(propertyInfo, "Property SpecialInstructions does not exist in CanteenOrder class");
+            Type expectedType = propertyInfo.PropertyType;
+            Assert.AreEqual(typeof(string), expectedType, "Property SpecialInstructions in CanteenOrder class is not of type string");
+        }
+
+        // Test to Check CanteenOrder Models Property Quantity Exists with correcct datatype int    
+        [Test]
+        public void CanteenOrder_Quantity_PropertyExists_ReturnExpectedDataTypes_int()
+        {
+            string assemblyName = "dotnetapp";
+            string typeName = "dotnetapp.Models.CanteenOrder";
+            Assembly assembly = Assembly.Load(assemblyName);
+            Type CanteenOrderType = assembly.GetType(typeName);
+            PropertyInfo propertyInfo = CanteenOrderType.GetProperty("Quantity");
+            Assert.IsNotNull(propertyInfo, "Property Quantity does not exist in CanteenOrder class");
+            Type expectedType = propertyInfo.PropertyType;
+            Assert.AreEqual(typeof(int), expectedType, "Property Quantity in CanteenOrder class is not of type int");
+        }
+        
         // Test to check whether OrderController Controllers Class exists
         [Test]
         public void OrderController_Controllers_ClassExists()
@@ -77,5 +158,7 @@ namespace TestProject
             MethodInfo methodInfo = OrderControllerType.GetMethod("Create", Type.EmptyTypes);
             Assert.IsNotNull(methodInfo, "Method Create does not exist in OrderController class");
         }
+
+
     }
 }
